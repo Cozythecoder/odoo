@@ -1,0 +1,40 @@
+<odoo>
+    <menuitem id="menu_custom_invoice" name="Custom Invoices" sequence="10" />
+
+    <record id="view_custom_invoice_tree" model="ir.ui.view">
+        <field name="name">custom.invoice.tree</field>
+        <field name="model">custom.invoice</field>
+        <field name="arch" type="xml">
+            <tree string="Custom Invoices">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_custom_invoice_form" model="ir.ui.view">
+        <field name="name">custom.invoice.form</field>
+        <field name="model">custom.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Custom Invoice">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="partner_id"/>
+                        <field name="amount_total"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <action id="action_custom_invoice" name="Custom Invoices"
+            res_model="custom.invoice" view_mode="tree,form"/>
+
+    <menuitem id="menu_custom_invoice_root" name="Invoices"
+              sequence="5" action="action_custom_invoice"
+              parent="menu_custom_invoice"/>
+</odoo>

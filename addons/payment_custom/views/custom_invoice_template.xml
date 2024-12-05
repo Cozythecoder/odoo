@@ -1,0 +1,24 @@
+<!-- custom_invoice_template.xml -->
+<odoo>
+    <template id="report_invoice_document" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@class='page']" position="before">
+            <!-- Hello World Message -->
+            <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">
+                Hello World! This is my custom invoice layout.
+            </div>
+        </xpath>
+
+        <!-- Optionally, you can also modify the existing invoice fields below -->
+        <xpath expr="//table[@class='table table-sm table-bordered mt32']" position="before">
+            <div style="font-size: 18px; margin-bottom: 15px;">
+                Custom Hello World Message Above Invoice Table
+            </div>
+        </xpath>
+
+        <xpath expr="//span[@t-field='o.name']" position="before">
+            <div style="text-align: center; font-size: 20px;">
+                Custom Invoice Number: <t t-esc="o.name"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,232 @@
+<t t-name="module_name.report_invoice_chinese_style">
+    <div class="page" style="font-size: 12px; font-family: 'DejaVu Sans', 'Noto Sans', Arial, sans-serif;">
+        <!-- Two-column layout for the invoice -->
+        <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse; table-layout: fixed;">
+            <tr>
+                <!-- Left Side -->
+                <td style="width: 50%; vertical-align: top; padding-right: 10px; border-right: 1px solid black;">
+                    <div style="text-align: center; font-size: 16px; font-weight: bold;">INVOICE</div>
+                    <table style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                        <tr>
+                            <td><strong>Customer:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.name" />
+                                </span>
+                            </td>
+                            <td><strong>Date:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.invoice_date" />
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phone:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.phone" />
+                                </span>
+                            </td>
+                            <td><strong>Biller:</strong> 系统管理员</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>Address:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.contact_address" />
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="width: 100%; border: 1px solid black; border-collapse: collapse; text-align: center;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black;">No</th>
+                                <th style="border: 1px solid black;">Description</th>
+                                <th style="border: 1px solid black;">QTY</th>
+                                <th style="border: 1px solid black;">U/Price</th>
+                                <th style="border: 1px solid black;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.invoice_line_ids" t-as="line">
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.sequence or loop.index" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.name" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.quantity" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.price_unit" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.price_total" />
+                                </td>
+                            </tr>
+                            <t t-set="empty_rows" t-value="10 - len(o.invoice_line_ids)" />
+                            <tr t-foreach="range(empty_rows)" t-as="dummy">
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: 1px solid black;">
+                                <strong>Terms and Conditions:</strong>
+                                <ul style="list-style: none; padding-left: 0;">
+                                    <li>1. Goods sold are non-refundable and non-exchangeable.</li>
+                                    <li>2. Payment must be made within the specified due date.</li>
+                                    <li>3. The company is not liable for any damage or loss after delivery.</li>
+                                </ul>
+                            </td>
+                            <td style="width: 30%; vertical-align: top; padding-left: 10px;">
+                                <table style="width: 100%; border-collapse: collapse; text-align: right;">
+                                    <tr>
+                                        <td><b>Total:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_total" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Paid:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_paid" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Arrearage:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_residual" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="font-size: 10px; margin-top: 5px;">
+                        <b>Customer:</b>
+                        <span style="text-decoration: underline;">
+                            <t t-esc="o.partner_id.name" />
+                        </span>
+                    </div>
+                </td>
+                <!-- Right Side -->
+                <td style="width: 50%; vertical-align: top; padding-left: 10px;">
+                    <div style="text-align: center; font-size: 16px; font-weight: bold;">INVOICE</div>
+                    <table style="width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                        <tr>
+                            <td><strong>Customer:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.name" />
+                                </span>
+                            </td>
+                            <td><strong>Date:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.invoice_date" />
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phone:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.phone" />
+                                </span>
+                            </td>
+                            <td><strong>Biller:</strong> 系统管理员</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><strong>Address:</strong>
+                                <span style="text-decoration: underline;">
+                                    <t t-esc="o.partner_id.contact_address" />
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="width: 100%; border: 1px solid black; border-collapse: collapse; text-align: center;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black;">No</th>
+                                <th style="border: 1px solid black;">Description</th>
+                                <th style="border: 1px solid black;">QTY</th>
+                                <th style="border: 1px solid black;">U/Price</th>
+                                <th style="border: 1px solid black;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.invoice_line_ids" t-as="line">
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.sequence or loop.index" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.name" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.quantity" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.price_unit" />
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <t t-esc="line.price_total" />
+                                </td>
+                            </tr>
+                            <!-- Fill empty rows to create blank space -->
+                            <t t-set="empty_rows" t-value="10 - len(o.invoice_line_ids)" />
+                            <tr t-foreach="range(empty_rows)" t-as="dummy">
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                                <td style="border: 1px solid black;">&#160;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: 1px solid black;">
+                                <strong>Terms and Conditions:</strong>
+                                <ul style="list-style: none; padding-left: 0;">
+                                    <li>1. Goods sold are non-refundable and non-exchangeable.</li>
+                                    <li>2. Payment must be made within the specified due date.</li>
+                                    <li>3. The company is not liable for any damage or loss after delivery.</li>
+                                </ul>
+                            </td>
+                            <td style="width: 30%; vertical-align: top; padding-left: 10px;">
+                                <table style="width: 100%; border-collapse: collapse; text-align: right;">
+                                    <tr>
+                                        <td><b>Total:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_total" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Paid:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_paid" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Arrearage:</b></td>
+                                        <td>
+                                            <t t-esc="o.amount_residual" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="font-size: 10px; margin-top: 5px;">
+                        <b>Customer:</b>
+                        <span style="text-decoration: underline;">
+                            <t t-esc="o.partner_id.name" />
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</t>
