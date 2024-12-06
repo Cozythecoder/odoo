@@ -4201,9 +4201,11 @@ class TestMrpOrder(TestMrpCommon):
     def test_update_qty_producing_done_MO_with_lot(self):
         """
         Test that increasing the qty producing of a done MO for a product tracked by lot
-        will create an additional sml for the final product with the same producing lot
+        will create an additional sml for the final product with the same producing lot.
+        And test that removing products from stock, then increasing the qty producing of the MO
+        results in the correct qty of tracked products in stock.
         """
-        tracked_product = self.env['product.template'].create({
+        tracked_product = self.env['product.product'].create({
             'name': 'Super Product',
             'tracking': 'lot',
             'type': 'product',
@@ -4213,8 +4215,8 @@ class TestMrpOrder(TestMrpCommon):
             })],
         })
         mo = self.env['mrp.production'].create({
-            'product_id': tracked_product.product_variant_ids.id,
-            'product_uom_qty': 2.0,
+            'product_id': tracked_product.id,
+            'product_uom_qty': 5.0,
         })
         mo.action_generate_serial()
         producing_lot = mo.lot_producing_id
@@ -4222,9 +4224,17 @@ class TestMrpOrder(TestMrpCommon):
         self.assertEqual(mo.state, 'done')
         self.assertEqual(mo.move_finished_ids.lot_ids, producing_lot)
         self.assertEqual(mo.move_finished_ids.move_line_ids.mapped('lot_id'), producing_lot)
-        mo.qty_producing = 3.0
+        mo.qty_producing = 10.0
         self.assertTrue(all(sml.lot_id == producing_lot for sml in mo.move_finished_ids.move_line_ids))
-        self.assertEqual(sum(sml.quantity for sml in mo.move_finished_ids.move_line_ids), 3.0)
+        self.assertEqual(sum(sml.quantity for sml in mo.move_finished_ids.move_line_ids), 10.0)
+
+        stock_location = self.env.ref('stock.stock_location_stock')
+        self.env['stock.quant']._update_available_quantity(tracked_product, stock_location, -3, lot_id=producing_lot)
+        mo.qty_producing = 15.0
+        quants = tracked_product.stock_quant_ids.filtered(lambda q: q.location_id == stock_location)
+        self.assertRecordValues(quants, [
+            {'quantity': 12.0, 'lot_id': producing_lot.id},
+        ])
 
     def test_mrp_link_new_operations(self):
         """
@@ -4337,6 +4347,31 @@ class TestMrpOrder(TestMrpCommon):
         production.workorder_ids.workcenter_id = workcenter_5
         self.assertEqual(fields.Datetime.now(), production.workorder_ids.date_start)
         self.assertEqual(fields.Datetime.now() + timedelta(hours=6), production.workorder_ids.date_finished, "The time difference should be 6 hours: 6 for the shift and 0 for the lunch pause")
+
+    def test_compute_tracked_time_3(self):
+        """
+        Checks that the expected duration calculation is correct when the BoM has a different UoM than the product.
+        """
+        # Change the BoM UoM to be Dozens instead of Units
+        self.bom_4.product_uom_id = self.uom_dozen
+
+        self.env.user.groups_id += self.env.ref('mrp.group_mrp_routings')
+        production_form = Form(self.env['mrp.production'])
+        production_form.bom_id = self.bom_4
+        production = production_form.save()
+        production.action_confirm()
+        production.button_plan()
+        production_form = Form(production)
+        production_form.qty_producing = 1
+        with production_form.workorder_ids.edit(0) as wo:
+            wo.duration = 15  # Complete the work order in 15 minutes
+        production = production_form.save()
+        production.button_mark_done()
+
+        production_form = Form(self.env['mrp.production'])
+        production_form.bom_id = self.bom_4
+        production = production_form.save()
+        self.assertEqual(production.workorder_ids[0].duration_expected, 15)
 
 
 @tagged('post_install', '-at_install')
